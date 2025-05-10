@@ -1,0 +1,13 @@
+[package]
+name = "rust_db_proxy"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.98"
+csv = "1.3.1"
+odbc-api = "12.2.0"
+serde = "1.0.219"
+tokio = { version = "1.45.0", features = ["full"] }
+tonic = "0.13.1"
+tonic-build = "0.13.1"
