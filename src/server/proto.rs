@@ -1,2 +1,2 @@
-// Placeholder for generated gRPC code
-// Will include tonic::include_proto!("db_proxy");
+// Include the generated gRPC code
+tonic::include_proto!("db_proxy");

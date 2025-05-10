@@ -1321,6 +1321,7 @@ dependencies = [
  "anyhow",
  "csv",
  "odbc-api",
+ "prost",
  "serde",
  "thiserror 2.0.12",
  "tokio",
