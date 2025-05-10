@@ -1,0 +1,5 @@
+[tenants.tenant1]
+connection_string = "Driver={SQLite3};Database=tenant1.db;"
+
+[tenants.tenant2]
+connection_string = "Driver={SQLite3};Database=tenant2.db;"

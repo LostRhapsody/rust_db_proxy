@@ -1,27 +1,54 @@
-use anyhow::Error;
-use odbc_api::{buffers::TextRowSet, Cursor, Environment, ConnectionOptions, ResultSetMetadata};
-use std::io::stdout;
+use anyhow::Result;
+
+pub mod config;
+pub mod connection;
+pub mod query;
+pub mod tenant;
+pub mod error;
+
+use config::Config;
+use odbc_api::{
+    ConnectionOptions,
+    Environment,
+    Cursor,
+    ResultSetMetadata,
+    buffers::TextRowSet
+};
+
+use std::{collections::HashMap, io::stdout};
 
 /// Maximum number of rows fetched with one row set. Fetching batches of rows is usually much
 /// faster than fetching individual rows.
 const BATCH_SIZE: usize = 5000;
 
 #[tokio::main]
-async fn main() -> Result<(), Error> {
-    // Write csv to standard out
-    let out = stdout();
-    let mut writer = csv::Writer::from_writer(out);
-
-    // Create an ODBC environment
+async fn main() -> Result<()> {
+    let config = Config::load()?;
+    let mut writer = csv::Writer::from_writer(stdout());
     let env = Environment::new()?;
 
-    // Connection string for SQLite
-    let connection_string = "Driver={SQLite3};Database=tenant1.db;";
+    // create hash map of tenant IDs and connection pools
+    let mut pools = HashMap::new();
+    for (tenant_id, tenant_config) in &config.tenants {
+        let mut pool = vec![];
+        for _ in 0..5 {
+            let conn = env.connect_with_connection_string(
+                &tenant_config.connection_string,
+                ConnectionOptions::default(),
+            )?;
+            pool.push(conn);
+        }
+        pools.insert(tenant_id.clone(), pool);
+    }
 
-    // Establish a connection asynchronously
-    let connection = env.connect_with_connection_string(connection_string, ConnectionOptions::default())?;
+    // Example finding a connection pool by tenant ID
+    let tenant_id = "tenant1"; // Replace with actual tenant ID
+    let pool = pools.get(tenant_id).ok_or_else(|| {
+        anyhow::anyhow!("No connection pool found for tenant ID: {}", tenant_id)
+    })?;
 
-    match connection.execute("SELECT * FROM users", (), None)? {
+    // Example usage of the connection pool
+    match pool[0].execute("SELECT * FROM users", (), None)? {
         Some(mut cursor) => {
             // Write the column names to stdout
             let headline : Vec<String> = cursor.column_names()?.collect::<Result<_,_>>()?;
