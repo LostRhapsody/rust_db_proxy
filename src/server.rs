@@ -26,6 +26,7 @@ impl Greeter for MyGreeter {
     }
 }
 
+// run with cargo run --bin db-proxy-server
 // test with:
 // grpcurl -plaintext -import-path ./proto -proto helloworld.proto -d '{"name": "Tonic"}' '[::1]:50051' helloworld.Greeter/SayHello
 // run in the root dir of the project
