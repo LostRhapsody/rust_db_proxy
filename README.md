@@ -1,0 +1,32 @@
+# Rust Database Proxy
+
+A gRPC server, accepts queries and tenant IDs in requests, connects to the database associated with the tenant ID, executes the query, and returns the response set.
+
+## Connection
+
+Connections to databases are established using ODBC via the `odbc_api` crate. Using `tokio`, the runtime is asynchronous, and connection pools are established to keep connections warm and latency low.
+
+## Tenants
+
+Currently, a `config.toml` file is used to define key value pairs for tenant IDs and their connection strings. This will be moved to a solution akin to HashiCorp's Vault, something cheaper or free tough.
+
+## Deployment
+
+This server becomes much more useful in a Kubernets cluster with horizontal scaling, to add more nodes as the load increases and reduce the number of nodes as the load decreases. Perfect for managing lots of active connections at once, and saving resources during off peak hours.
+
+## Testing
+
+Run this server with `cargo run` for development testing, open a new terminal, and use `grpcurl` to send a request to the server:
+```bash
+grpcurl -plaintext -import-path ./proto -proto db_proxy.proto -d '{"tenant_id": "tenant1", "query": "SELECT * FROM users"}' '[::1]:50051' db_proxy.DbProxy/SendQuery
+```
+
+This is a very simple connection and request using the database `tenant1` which is in the repo. It's a `sqlite` database for testing.
+
+## HTTP/1.1 Compatibility
+
+Currently HTTP/1.1 compatibility is not turned on, but it's planned. This will have a fully documented gRPC and REST API for convienience. This is primarily for managing connections from your backend, not a client, so gRPC is recommended, but on the off chance your backend stack does not support gRPC, REST will be available as a fallback.
+
+## Test Runner
+
+A test runner is in development so this can be profiled and battle tested. Currently, only the initial test has been made, and it's behavior and performance under load is totally unknown.
