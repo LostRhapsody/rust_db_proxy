@@ -8,7 +8,7 @@ Connections to databases are established using ODBC via the `odbc_api` crate. Us
 
 ## Tenants
 
-Currently, a `config.toml` file is used to define key value pairs for tenant IDs and their connection strings. This will be moved to a solution akin to HashiCorp's Vault, something cheaper or free tough.
+Currently, a `config.toml` file is used to define key value pairs for tenant IDs and their connection strings. This will be moved to a solution akin to HashiCorp's Vault, something cheaper or free though.
 
 ## Deployment
 
@@ -25,7 +25,11 @@ This is a very simple connection and request using the database `tenant1` which 
 
 ## HTTP/1.1 Compatibility
 
-Currently HTTP/1.1 compatibility is not turned on, but it's planned. This will have a fully documented gRPC and REST API for convienience. This is primarily for managing connections from your backend, not a client, so gRPC is recommended, but on the off chance your backend stack does not support gRPC, REST will be available as a fallback.
+Currently HTTP/1.1 compatibility is not turned on, but it's planned. This will have a fully documented gRPC and REST API for convienience. The proxy is primarily for managing connections from your backend, not a client, so gRPC is recommended, but on the off chance your backend stack does not support gRPC, REST will be available as a fallback.
+
+### Note about gRPC in Progress OpenEdge
+
+Progress does not officially support the gRPC protocol, but if an organization were to get in touch with Progress, a joint effort could be made to create a Progress gRPC library. It's a 10 year old technology, bleading edge yet already established and not 'new'. Progress needs support for this.
 
 ## Test Runner
 
