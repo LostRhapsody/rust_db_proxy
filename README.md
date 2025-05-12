@@ -3,6 +3,7 @@
 A gRPC server, accepts queries and tenant IDs in requests, connects to the database associated with the tenant ID, executes the query, and returns the response set.
 
 > Note regarding folder structure
+> 
 > All of the work is done in main.rs at the moment, the structure is how it will, hopefully, eventually, be organized into, but it's easier to get it all working in one, simple file first.
 
 ## Connection
